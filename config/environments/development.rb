@@ -50,6 +50,9 @@ Rails.application.configure do
   # Tell Active Support which deprecation messages to disallow.
   config.active_support.disallowed_deprecation_warnings = []
 
+  #To render an debugging info with debugging format
+  # config.debug_exception_response_format = :api
+
   # Raise an error on page load if there are pending migrations.
   config.active_record.migration_error = :page_load
 

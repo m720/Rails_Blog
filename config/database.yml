@@ -14,18 +14,19 @@ default: &default
   encoding: utf8mb4
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
   database: blog
-  username: root
-  password: root
+  username: dbuser
+  password: pass
   socket: /var/run/mysqld/mysqld.sock
 
+                    d
 development:
   database: blog_development
   adapter: mysql2
   encoding: utf8mb4
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
   database: blog
-  username: root
-  password: root
+  username: dbuser
+  password: pass
   socket: /var/run/mysqld/mysqld.sock
 
 # Warning: The database defined as "test" will be erased and
