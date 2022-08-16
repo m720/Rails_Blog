@@ -56,16 +56,16 @@ ActiveRecord::Schema[7.0].define(version: 2022_08_14_132237) do
   create_table "users", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name"
     t.string "email"
-    t.string "password"
+    t.string "password_digest"
     t.string "image"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
-  add_foreign_key "comments", "users"
-  add_foreign_key "comments_posts", "comments"
-  add_foreign_key "comments_posts", "posts"
-  add_foreign_key "posts", "users"
-  add_foreign_key "tags_posts", "posts"
-  add_foreign_key "tags_posts", "tags"
+  add_foreign_key "comments", "users", on_delete: :cascade
+  add_foreign_key "comments_posts", "comments", on_delete: :cascade
+  add_foreign_key "comments_posts", "posts", on_delete: :cascade
+  add_foreign_key "posts", "users", on_delete: :cascade
+  add_foreign_key "tags_posts", "posts", on_delete: :cascade
+  add_foreign_key "tags_posts", "tags", on_delete: :cascade
 end

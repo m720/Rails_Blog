@@ -1,6 +1,6 @@
 class TagsPostsController < ApplicationController
-  before_action :set_tags_post, only: %i[ show edit update destroy ]
-
+  # before_action :set_tags_post, only: %i[ show edit update destroy ]
+  before_action :authorized
   # GET /tags_posts or /tags_posts.json
   def index
     @tags_posts = TagsPost.all
