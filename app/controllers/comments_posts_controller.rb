@@ -1,6 +1,7 @@
 class CommentsPostsController < ApplicationController
   # before_action :set_comments_post, only: %i[ show edit update destroy ]
   before_action :authorized
+  before_action :userAuthorized , only: [:update, :destroy]
   # GET /comments_posts or /comments_posts.json
   def index
     @comments_posts = CommentsPost.all

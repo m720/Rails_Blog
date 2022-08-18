@@ -1,6 +1,7 @@
 class PostsController < ApplicationController
   before_action :set_post, only: [:update, :destroy]
   before_action :authorized
+  before_action :userAuthorized , only: [:update, :destroy, :create]
   # GET /posts or /posts.json
   def index
     @posts = Post.all
@@ -22,7 +23,9 @@ class PostsController < ApplicationController
     @post = Post.new(post_params)
       if @post.valid?
         @post.save!
-        render json: {post: @post, notice: "Post was successfully created." }
+        # delete the post after 24 hours from creation
+        DeletePostsJob.perform_in(24.hours, @post.id)
+        render json: {post: @post, notice: "Post was successfully created. and will delete after 24 hours" }
       else
         render json: {errors: @post.errors}
     end
@@ -55,4 +58,17 @@ class PostsController < ApplicationController
     def post_params
       params.require(:post).permit(:title, :body, :user_id)
     end
+
+    #check if it's the same user that is trying to update or delete for himself or not
+  def sameUser 
+    if decoded_token
+      user_id = decoded_token[0]["user_id"]
+      post_user_id  = (JSON.parse(request.raw_post))["post"]["user_id"]
+      user_id == post_user_id
+    end
+  end
+
+  def userAuthorized
+    render json: {message: 'Not Authorized'}, status: :unauthorized unless sameUser
+  end
 end

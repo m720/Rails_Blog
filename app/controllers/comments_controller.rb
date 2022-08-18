@@ -1,6 +1,7 @@
 class CommentsController < ApplicationController
   # before_action :set_comment, only: %i[ show edit update destroy ]
   before_action :authorized
+  before_action :userAuthorized , only: [:update, :destroy]
   # GET /comments or /comments.json
   def index
     @comments = Comment.all
@@ -67,4 +68,18 @@ class CommentsController < ApplicationController
     def comment_params
       params.require(:comment).permit(:user_id, :title, :body)
     end
+
+
+       #check if it's the same user that is trying to update or delete for himself or not
+  def sameUser 
+    if decoded_token
+      user_id = decoded_token[0]["user_id"]
+      comment_user_id  = (JSON.parse(request.raw_post))["commnet"]["user_id"]
+      user_id ==comment_user_id
+    end
+  end
+
+  def userAuthorized
+    render json: {message: 'Not Authorized'}, status: :unauthorized unless sameUser
+  end
 end

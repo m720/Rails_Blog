@@ -1,6 +1,5 @@
 class UsersController < ApplicationController
 
-  # before_action :authorized, only: [:auto_login]
   before_action :set_user, only: [:update, :destroy]
   before_action :userAuthorized , only: [:update, :destroy]
 
@@ -48,7 +47,6 @@ class UsersController < ApplicationController
 
   # DELETE /users/1 or /users/1.json
   def destroy
-    #TODO must be the same user
     @user.destroy
       render json: { notice: "User was successfully destroyed." }
   end
@@ -56,7 +54,6 @@ class UsersController < ApplicationController
 
   # login
   def login
-    puts "this is login"
     @user = User.find_by(email: params[:email])
 
     if @user && @user.authenticate(params[:password])
@@ -84,14 +81,15 @@ class UsersController < ApplicationController
       params.require(:user).permit(:name, :email, :password, :image)
     end
 
-    #check if it's the same user that is trying to update or delete himself or not
+    private
+    # Use callbacks to share common setup or constraints between actions.
+    def set_user
+      @user = User.find(params[:id])
+    end
+    #check if it's the same user that is trying to update or delete for himself or not
     def sameUser 
-      puts "same user called"
       if decoded_token
         user_id = decoded_token[0]["user_id"]
-
-        puts "user.id is: "+ user_id.to_s
-        puts @user.id
 
         user_id ==@user.id
       end

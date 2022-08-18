@@ -1,0 +1,51 @@
+version: "3.9" 
+services:
+  db: 
+    image: mysql
+    container_name: db
+    restart: always
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+    volumes: 
+      - db:/var/lib/mysql
+    networks:
+        - default
+  redis:
+    container_name: redis
+    image: redis
+  sidekiq:
+    container_name: sidekiq
+    build: 
+      context: .
+      dockerfile: Dockerfile.sidekiq
+    depends_on:
+      - "db"
+      - "redis"
+    networks:
+      - default
+    volumes: 
+      - .:/app:z
+  web:
+    container_name: web
+    build: .
+    environment:
+      - DB_NAME='blog'
+      - DB_USER='root'
+      - DB_PASS='root'
+      - DB_HOST='db'
+    volumes: 
+      - .:/app:z
+    networks:
+      - default
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+      - redis
+      - sidekiq
+networks:
+  default:
+    driver: bridge
+volumes:
+  blog:
+  db:
