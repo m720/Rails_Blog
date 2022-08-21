@@ -21,13 +21,26 @@ class PostsController < ApplicationController
   # POST /posts or /posts.json
   def create
     @post = Post.new(post_params)
-      if @post.valid?
+    if @post.valid? &&(JSON.parse(request.raw_post))["tags"]
+      @tagsController = TagsController.new()
+      #finds and returns tags wth ids
+      tags_ids =@tagsController.find_multiple((JSON.parse(request.raw_post))["tags"])
+      if(tags_ids.length >0)
         @post.save!
-        # delete the post after 24 hours from creation
-        DeletePostsJob.perform_in(24.hours, @post.id)
-        render json: {post: @post, notice: "Post was successfully created. and will delete after 24 hours" }
+
+        tags_ids.each do |tag|
+          TagsPost.create(tag_id: tag, post_id: @post.id)
+          puts "inserted in join table "
+          # delete the post after 24 hours from creation
+          # DeletePostsJob.perform_in(24.hours, @post.id)
+        end
+        render( json: {post: @post, notice: "Post was successfully created. and will delete after 24 hours" }, status: :created)
+      
       else
-        render json: {errors: @post.errors}
+        render( json: {errors: "post must have at least one valid tag"}, status: :forbidden)
+      end
+    else
+      render( json: {errors: @post.errors}, status: :forbidden)
     end
   end
 

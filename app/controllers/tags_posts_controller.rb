@@ -23,15 +23,10 @@ class TagsPostsController < ApplicationController
   # POST /tags_posts or /tags_posts.json
   def create
     @tags_post = TagsPost.new(tags_post_params)
-
-    respond_to do |format|
-      if @tags_post.save
-        format.html { redirect_to tags_post_url(@tags_post), notice: "Tags post was successfully created." }
-        format.json { render :show, status: :created, location: @tags_post }
-      else
-        format.html { render :new, status: :unprocessable_entity }
-        format.json { render json: @tags_post.errors, status: :unprocessable_entity }
-      end
+    if @tags_post.save
+      render(json:  {notice: "Tags post was successfully created."}, status: :created) 
+    else
+      render( json: {errors: @tags_post.errors}, status: :unprocessable_entity )
     end
   end
 

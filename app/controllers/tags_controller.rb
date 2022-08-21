@@ -5,57 +5,61 @@ class TagsController < ApplicationController
   # GET /tags or /tags.json
   def index
     @tags = Tag.all
+    render( json: {tags: @tags}, status: :ok)
+
   end
 
   # GET /tags/1 or /tags/1.json
   def show
   end
 
-  # GET /tags/new
-  def new
-    @tag = Tag.new
-  end
-
-  # GET /tags/1/edit
-  def edit
-  end
-
   # POST /tags or /tags.json
   def create
     @tag = Tag.new(tag_params)
 
-    respond_to do |format|
       if @tag.save
-        format.html { redirect_to tag_url(@tag), notice: "Tag was successfully created." }
-        format.json { render :show, status: :created, location: @tag }
+        render(json: { message: "Tag was successfully created." }, status: :created )
       else
-        format.html { render :new, status: :unprocessable_entity }
-        format.json { render json: @tag.errors, status: :unprocessable_entity }
+        render(json: {message: "tag was not created!", errors: @tag.errors}, status: :forbidden)
       end
-    end
   end
 
   # PATCH/PUT /tags/1 or /tags/1.json
   def update
     respond_to do |format|
       if @tag.update(tag_params)
-        format.html { redirect_to tag_url(@tag), notice: "Tag was successfully updated." }
-        format.json { render :show, status: :ok, location: @tag }
+        render( json: {message: "tag was updated succesfully"}, status: :ok )
       else
-        format.html { render :edit, status: :unprocessable_entity }
-        format.json { render json: @tag.errors, status: :unprocessable_entity }
+        render( json: {errors: @tag.errors}, status: :unprocessable_entity )
       end
     end
   end
 
   # DELETE /tags/1 or /tags/1.json
   def destroy
-    @tag.destroy
-
-    respond_to do |format|
-      format.html { redirect_to tags_url, notice: "Tag was successfully destroyed." }
-      format.json { head :no_content }
+    if @tag.destroy
+      render(json: {notice: "Tag was successfully destroyed." }, status: :ok)
+    else
+      render(json: {notice: "Tag was not destroyed." }, status: :unauthorized)
     end
+
+  end
+
+  # find one or more tags by name
+  def find_multiple(tags_names)
+    # tags_number = 0 #counter for found tags
+    tags_IDs= []
+    puts "ids length befor add #{tags_IDs}"
+    tags_names.each do |tag|
+      @tag= Tag.find_by(title: tag)
+      if(@tag)
+        puts "tag #{tag} found!"
+        tags_IDs.push(@tag.id)
+      else 
+        puts "tag #{tag} not found!"
+      end
+    end
+    tags_IDs
   end
 
   private
