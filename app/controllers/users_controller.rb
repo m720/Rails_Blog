@@ -23,7 +23,7 @@ class UsersController < ApplicationController
       @user.save!
       exp = Time.now.to_i+ (12*60*60)
       token = encode_token({user_id: @user.id, "exp": exp})
-      render( json: {user: @user, token: token}, status: :ok)
+      render( json: {user: @user, token: token}, status: :created)
     else
       render(json: {
         errors: @user.errors, 

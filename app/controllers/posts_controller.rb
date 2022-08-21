@@ -32,7 +32,7 @@ class PostsController < ApplicationController
           TagsPost.create(tag_id: tag, post_id: @post.id)
           puts "inserted in join table "
           # delete the post after 24 hours from creation
-          # DeletePostsJob.perform_in(24.hours, @post.id)
+          DeletePostsJob.perform_in(24.hours, @post.id)
         end
         render( json: {post: @post, notice: "Post was successfully created. and will delete after 24 hours" }, status: :created)
       
