@@ -24,13 +24,10 @@ class CommentsPostsController < ApplicationController
   def create
     @comments_post = CommentsPost.new(comments_post_params)
 
-    respond_to do |format|
       if @comments_post.save
-        format.html { redirect_to comments_post_url(@comments_post), notice: "Comments post was successfully created." }
-        format.json { render :show, status: :created, location: @comments_post }
+        render(json: {message: "Comments post was successfully created."  }, status: :created)
       else
-        format.html { render :new, status: :unprocessable_entity }
-        format.json { render json: @comments_post.errors, status: :unprocessable_entity }
+        render(json: {message: "Comments post was not created."  }, status: :unprocessable_entity)
       end
     end
   end
@@ -39,11 +36,10 @@ class CommentsPostsController < ApplicationController
   def update
     respond_to do |format|
       if @comments_post.update(comments_post_params)
-        format.html { redirect_to comments_post_url(@comments_post), notice: "Comments post was successfully updated." }
-        format.json { render :show, status: :ok, location: @comments_post }
+        render(json: {message: "Comments post was successfully updated."  }, status: :ok)
+
       else
-        format.html { render :edit, status: :unprocessable_entity }
-        format.json { render json: @comments_post.errors, status: :unprocessable_entity }
+        render(json: {message: "Comments post was not updated."  }, status: :unprocessable_entity)
       end
     end
   end
@@ -51,10 +47,10 @@ class CommentsPostsController < ApplicationController
   # DELETE /comments_posts/1 or /comments_posts/1.json
   def destroy
     @comments_post.destroy
+    render(json: {message: "Comments post was successfully deleted."  }, status: :ok)
 
     respond_to do |format|
-      format.html { redirect_to comments_posts_url, notice: "Comments post was successfully destroyed." }
-      format.json { head :no_content }
+
     end
   end
 

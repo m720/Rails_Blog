@@ -53,7 +53,6 @@ class TagsController < ApplicationController
     tags_names.each do |tag|
       @tag= Tag.find_by(title: tag)
       if(@tag)
-        puts "tag #{tag} found!"
         tags_IDs.push(@tag.id)
       else 
         puts "tag #{tag} not found!"
